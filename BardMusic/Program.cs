@@ -32,43 +32,14 @@ namespace BardMusic
         private const string EQUALS = "=";
 
         // Note Codes
-        private const string C_MINUS_1 = "c-1";
-        private const string C_SHARP_MINUS_1 = "c#-1";
-        private const string D_MINUS_1 = "d-1";
-        private const string E_FLAT_MINUS_1 = "e@-1";
-        private const string E_MINUS_1 = "e-1";
-        private const string F_MINUS_1 = "f-1";
-        private const string F_SHARP_MINUS_1 = "f#-1";
-        private const string G_MINUS_1 = "g-1";
-        private const string G_SHARP_MINUS_1 = "g#-1";
-        private const string A_MINUS_1 = "a-1";
-        private const string B_FLAT_MINUS_1 = "b@-1";
-        private const string B_MINUS_1 = "b-1";
+        private const string A = "a";
+        private const string B = "b";
         private const string C = "c";
-        private const string C_SHARP = "c#";
         private const string D = "d";
-        private const string E_FLAT = "e@";
         private const string E = "e";
         private const string F = "f";
-        private const string F_SHARP = "f#";
-        private const string G = "g";
-        private const string G_SHARP = "g#";
-        private const string A = "a";
-        private const string B_FLAT = "b@";
-        private const string B = "b";
-        private const string C_PLUS_1 = "c+1";
-        private const string C_SHARP_PLUS_1 = "c#+1";
-        private const string D_PLUS_1 = "d+1";
-        private const string E_FLAT_PLUS_1 = "e@+1";
-        private const string E_PLUS_1 = "e+1";
-        private const string F_PLUS_1 = "f+1";
-        private const string F_SHARP_PLUS_1 = "f#+1";
-        private const string G_PLUS_1 = "g+1";
-        private const string G_SHARP_PLUS_1 = "g#+1";
-        private const string A_PLUS_1 = "a+1";
-        private const string B_FLAT_PLUS_1 = "b@+1";
-        private const string B_PLUS_1 = "b+1";
-        private const string C_PLUS_2 = "c+2";
+        private const string FLAT = "@";
+        private const string SHARP = "#";
         private const string REST = "r";
 
         // Frequency Codes
