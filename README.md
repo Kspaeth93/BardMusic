@@ -14,6 +14,8 @@ In the example above, the first note is a 'b' on the lower octave as indicated b
 
 **Hotbar Action Setup**
 
-An image of the hotbar action setup required to use Bard Music correctly is shown below. The bottom hotbar represents the '-1' octave, the second hotbar from the bottom represents the '0', or standard, octave and so on. From left to right, the hotbar abilities should be bound to the numbers '1' through '0', '-' and '='. There is no modifier key for the bottom hotbar. The second hotbar from the bottom is accessible with the 'Ctrl' modifier while the second and third hotbars from the bottom are accessible with the 'Shift' and 'Alt' modifiers respectively.
+An image of the hotbar action setup required to use Bard Music correctly is shown below. The bottom hotbar represents the '-1' octave, the second hotbar from the bottom represents the '0', or standard, octave and so on. From left to right, the hotbar abilities should be bound to the numbers '1' through '0', '-' and '='.
+
+There is no modifier key for the bottom hotbar. The second hotbar from the bottom is accessible with the 'Ctrl' modifier while the second and third hotbars from the bottom are accessible with the 'Shift' and 'Alt' modifiers respectively.
 
 ![Alt](https://i.imgur.com/Y2K43kO.png "Title")
