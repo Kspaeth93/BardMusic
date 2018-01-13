@@ -4,3 +4,10 @@
 \.vs/BardMusic/v15/Server/sqlite3/db\.lock
 
 \.vs/BardMusic/v15/Server/sqlite3/storage\.ide
+
+*/obj/**
+*/bin/**
+
+**.cache
+
+*.user
