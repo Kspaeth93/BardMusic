@@ -12,6 +12,8 @@ This note has a pitch of 'C' and a length of 1/8 of a full note as indicated by 
 ```
 (b@,16);(c#,16);
 ```
+These notes are 'b flat' and 'c sharp' respectively. They each have a length of 1/16 of a full note as indicated by the number '16'. Valid lengths for notes are as follows: '1', '2', '3', '4', '5', '8' and '16'.
+
 The pitch of a note can be shifted to an octave that is above or below the natural octave by using a '+' or '-' symbol respectively followed by a number indicating the number of octaves. An example is shown below.
 ```
 (a+1,16);(c#-1,16);
@@ -23,6 +25,7 @@ Input files consists of a series of notes wrapped in a starting and ending state
 (c#+1,16);(c#,8);(b@,16);(c#,16);
 ======END=BARD=MUSIC=SONG=FILE======
 ```
+For more information about valid notes and octaves, read about the hotbar action setup.
 
 **Hotbar Action Setup**
 
