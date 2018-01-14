@@ -4,13 +4,25 @@ Bard-Music defines a standard for music input files that maps to different music
 
 **Input File Syntax**
 
-Input files consist of a series of notes. Notes are composed of two parts: a pitch and a length. The pitch and length are separated by a comma and surrounded by parenthesis. Notes are terminated with a semicolon. See the example below for more information.
+Input files consists of a series of notes wrapped in a starting and ending statement. An example input file is shown below.
 ```
-(b-1,16);(b@,8);(c,4);(f#+1,2);
+=====BEGIN=BARD=MUSIC=SONG=FILE=====
+(a,16);(b@,16);(c#,16);(a-1,8);(a+1,8);
+(c#+1,16);(c#,8);(b@,16);(c#,16);
+======END=BARD=MUSIC=SONG=FILE======
 ```
-A pitch is composed of a note like 'b', 'c' or 'f', and (optionally) an octive like '-1' or '+1'. Flat notes are denoted with '@' while sharp notes are denoted with '#'.
-
-In the example above, the first note is a 'b' on the lower octave as indicated by the '-1'. The length of the note is 1/16 of a full note as indicated by the number '16'. The second note is a flat 'b' on the main octave with a length of 1/8 of a full note.
+Notes are composed of two parts: a pitch and a length. The pitch and length are separated by a comma and the whole thing is surrounded by parenthesis. Additionally, notes are terminated by a semicolon. An example note is shown below.
+```
+(c,8);
+```
+This note has a pitch of 'C' and a length of 1/8 of a full note as indicated by the number '8'. A flat note is denoted by the '@' symbol while a sharp note is denoted by the '#' symbol. An example of each is shown below.
+```
+(b@,16);(c#,16);
+```
+The pitch of a note can be shifted to an octave that is above or below the natural octave by using a '+' or '-' symbol respectively followed by a number indicating the number of octaves. An example is shown below.
+```
+(a+1,16);(c#-1,16);
+```
 
 **Hotbar Action Setup**
 
