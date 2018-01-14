@@ -1,6 +1,6 @@
 # Bard Music
 
-Bard-Music defines a standard for music input files that maps to different musical notes. These musical notes are also mapped to specific keybindings in FFXIV and macro'd to play music using the in game performance actions available to Bards.
+Bard Music is a program that plays music using Bard performance abilities. It uses its own special syntax for song input files which is documented below. There's lots of other helpful stuff too!
 
 **Input File Syntax**
 
@@ -29,8 +29,10 @@ For more information about valid notes and octaves, read about the hotbar action
 
 **Hotbar Action Setup**
 
-An image of the hotbar action setup required to use Bard Music correctly is shown below. The bottom hotbar represents the '-1' octave, the second hotbar from the bottom represents the '0', or standard, octave and so on. From left to right, the hotbar abilities should be bound to the numbers '1' through '0', '-' and '='.
-
-There is no modifier key for the bottom hotbar. The second hotbar from the bottom is accessible with the 'Ctrl' modifier while the second and third hotbars from the bottom are accessible with the 'Shift' and 'Alt' modifiers respectively.
+In order to use Bard Music correctly, Bard perfomance abilities need to be set to specific hotbar slots and special keybindings need to be set up. An annotated screen capture of the correct configuration is shown below.
 
 ![Alt](https://i.imgur.com/Y2K43kO.png "Title")
+
+Hotbar 1 represents the '-1' octave. Hotbar 2 represents the '+/-0', or natural, octave. Hotbars 3 and 4 represent the '+1' and '+2' octaves respectively. Note: The only available note in the '+2' octave is the 'C' pitch.
+
+There is no modifier key for the bottom hotbar. The second hotbar from the bottom is accessible with the 'Ctrl' modifier while the second and third hotbars from the bottom are accessible with the 'Shift' and 'Alt' modifiers respectively.
