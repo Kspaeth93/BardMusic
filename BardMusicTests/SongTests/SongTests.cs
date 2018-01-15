@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Const = Constants;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Song;
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,7 @@ namespace BardMusicTests
             var note = Note.Parse(sr, ' ');
 
             Assert.AreEqual(1, note.NoteIndex);
-            Assert.AreEqual(Modifiers.FLAT, note.Modifier);
+            Assert.AreEqual(Const.Modifier.FLAT, note.Modifier);
             Assert.AreEqual(-1, note.Octave);
             Assert.AreEqual(16, note.Length);
         }
