@@ -1,5 +1,5 @@
-﻿using BardMusic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Song;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace BardMusicTests
 {
     [TestClass]
-    public class BardMusicSongTests
+    public class SongTests
     {
         [TestMethod]
         public void TestParseValidEntry()

@@ -2,7 +2,7 @@
 using System.IO;
 using System.Windows.Forms;
 
-namespace BardMusic
+namespace Song
 {
     public enum Modifiers { SHARP, NATURAL, FLAT };
 

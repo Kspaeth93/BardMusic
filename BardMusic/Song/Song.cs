@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 
-namespace BardMusic
+namespace Song
 {
-    public class BardMusicSong
+    public class Song
     {
         protected List<Note> Notes = new List<Note>();
 
@@ -12,9 +12,9 @@ namespace BardMusic
             Notes.Add(n);
         }
 
-        public static BardMusicSong Parse(StreamReader _inputStream)
+        public static Song Parse(StreamReader _inputStream)
         {
-            var song = new BardMusicSong();
+            var song = new Song();
             var curNote = new Note();
 
             char curChar;
