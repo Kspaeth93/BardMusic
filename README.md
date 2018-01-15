@@ -18,6 +18,8 @@ The pitch of a note can be shifted to an octave that is above or below the natur
 ```
 (a+1,16);(c#-1,16);
 ```
+Valid octaves for notes are as follows: '-1', '-0', '+0', '+1' and '+2'. Note that the only pitch available in the '+2' octave is 'C'. Additionally, '-0' and '+0' may be omitted entirely for brevity.
+
 Input files consists of a series of notes wrapped in a starting and ending statement. An example input file is shown below.
 ```
 =====BEGIN=BARD=MUSIC=SONG=FILE=====
@@ -33,6 +35,6 @@ In order to use Bard Music correctly, Bard perfomance abilities need to be set t
 
 ![Alt](https://i.imgur.com/Y2K43kO.png "Title")
 
-Hotbar 1 represents the '-1' octave. Hotbar 2 represents the '+/-0', or natural, octave. Hotbars 3 and 4 represent the '+1' and '+2' octaves respectively. Note: The only available note in the '+2' octave is the 'C' pitch.
+Hotbar 1 represents the '-1' octave. Hotbar 2 represents the '+/-0', or natural, octave. Hotbars 3 and 4 represent the '+1' and '+2' octaves respectively. Note that the only available note in the '+2' octave is the 'C' pitch.
 
 There is no modifier key for the bottom hotbar. The second hotbar from the bottom is accessible with the 'Ctrl' modifier while the second and third hotbars from the bottom are accessible with the 'Shift' and 'Alt' modifiers respectively.
