@@ -60,6 +60,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Constants\Interval.cs" />
     <Compile Include="Constants\KeyBinding.cs" />
     <Compile Include="Constants\Length.cs" />
     <Compile Include="Constants\Modifier.cs" />

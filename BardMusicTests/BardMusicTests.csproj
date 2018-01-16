@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SongTests\NoteTest.cs" />
     <Compile Include="SongTests\SongTests.cs" />
   </ItemGroup>
   <ItemGroup>
