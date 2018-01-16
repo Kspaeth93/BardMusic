@@ -1,8 +1,11 @@
-﻿using Const = BardMusic.Constants;
+﻿using BardMusic.Song;
+using Const = BardMusic.Constants;
 using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
+using System.Threading;
 
 namespace BardMusic
 {
@@ -20,11 +23,47 @@ namespace BardMusic
         protected int halfNote = Const.Interval.RECOMMENDED * 8;
         protected int fullNote = Const.Interval.RECOMMENDED * 16;
 
-        static void Main(string[] args)
+        static void Main (string[] args)
         {
+            Program program = new Program();
+
+            String[] songLines = program.ReadSongFile(@"C:\Users\1022414\Desktop\song.txt");
+            Song.Song song = Song.Song.Parse(songLines);
+
+            Process process = program.GetFinalFantasyProcess();
+            if (process != null)
+            {
+                program.SetProcessToForeground(process);
+                program.PlaySong(song);
+            }
+
+            // TODO: Remove debug
+            for (int i = 0; i < song.NotesList.Count; i++)
+            {
+                Console.WriteLine("Note: (" + song.NotesList[i].Pitch + song.NotesList[i].Modifier + song.NotesList[i].Octave + "," + song.NotesList[i].Length + ")");
+                Console.WriteLine("Key Binding: " + Note.GetKeyBinding(song.NotesList[i]));
+            }
         }
 
-        protected void SetDefaultInterval()
+        protected Process GetFinalFantasyProcess ()
+        {
+            return Process.GetProcessesByName("ffxiv_dx11").FirstOrDefault();
+        }
+
+        protected void SetProcessToForeground (Process process)
+        {
+            if (process == null)
+            {
+                throw new ArgumentNullException("Process is undefined.");
+            }
+            else
+            {
+                IntPtr mainWindowIntPtr = process.MainWindowHandle;
+                SetForegroundWindow(mainWindowIntPtr);
+            }
+        }
+
+        protected void SetDefaultInterval ()
         {
             sixteenthNote = Const.Interval.RECOMMENDED;
             eighthNote = Const.Interval.RECOMMENDED * 2;
@@ -35,9 +74,13 @@ namespace BardMusic
             fullNote = Const.Interval.RECOMMENDED * 16;
         }
 
-        protected void SetCustomInterval(int customInterval)
+        protected void SetCustomInterval (int customInterval)
         {
-            if (customInterval >= Const.Interval.MINIMUM && customInterval >= Const.Interval.MAXIMUM)
+            if (customInterval < Const.Interval.MINIMUM || customInterval > Const.Interval.MAXIMUM)
+            {
+                throw new ArgumentOutOfRangeException("Custom interval is outside of the allowed range.");
+            }
+            else
             {
                 sixteenthNote = customInterval;
                 eighthNote = customInterval * 2;
@@ -49,17 +92,66 @@ namespace BardMusic
             }
         }
 
-        protected Process GetFinalFantasyProcess()
+        protected String[] ReadSongFile (String filePath)
         {
-            return Process.GetProcessesByName("ffxiv_dx11").FirstOrDefault();
+            if (filePath == null || filePath.Length < 1)
+            {
+                throw new ArgumentNullException("Invalid file path.");
+            }
+            else
+            {
+                return System.IO.File.ReadAllLines(filePath);
+            }
         }
 
-        protected void SetProcessToForeground(Process process)
+        protected void PlaySong (Song.Song song)
         {
-            if (process != null)
+            if (song == null)
             {
-                IntPtr mainWindowIntPtr = process.MainWindowHandle;
-                SetForegroundWindow(mainWindowIntPtr);
+                throw new ArgumentNullException("Song is undefined.");
+            }
+            else
+            {
+                if (song.NotesList == null || song.NotesList.Count < 1)
+                {
+                    throw new ArgumentNullException("Song has no notes.");
+                }
+                else
+                {
+                    for (int i = 0; i < song.NotesList.Count; i++)
+                    {
+                        int noteLength;
+                        String keyBinding = Note.GetKeyBinding(song.NotesList[i]);
+
+                        switch (song.NotesList[i].Length)
+                        {
+                            case Const.Length.FULL:
+                                noteLength = fullNote;
+                                break;
+                            case Const.Length.HALF:
+                                noteLength = halfNote;
+                                break;
+                            case Const.Length.THIRD:
+                                noteLength = thirdNote;
+                                break;
+                            case Const.Length.QUARTER:
+                                noteLength = quarterNote;
+                                break;
+                            case Const.Length.FIFTH:
+                                noteLength = fifthNote;
+                                break;
+                            case Const.Length.EIGHTH:
+                                noteLength = eighthNote;
+                                break;
+                            default:
+                                noteLength = sixteenthNote;
+                                break;
+                        }
+
+                        SendKeys.SendWait(keyBinding);
+                        Thread.Sleep(noteLength);
+                    }
+                }
             }
         }
     }

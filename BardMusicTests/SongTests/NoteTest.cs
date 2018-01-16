@@ -9,7 +9,7 @@ namespace BardMusicTests.SongTests
     public class NoteTest
     {
         [TestMethod]
-        public void TestParse()
+        public void TestParseNote ()
         {
             Note note = new Note();
 
@@ -20,7 +20,7 @@ namespace BardMusicTests.SongTests
             Assert.AreEqual(Const.Length.EIGHTH, note.Length);
         }
         [TestMethod]
-        public void TestGetKeyBinding()
+        public void TestGetKeyBinding ()
         {
             String keyBinding;
             Note note = new Note();

@@ -95,7 +95,7 @@ namespace BardMusic.Song
             }
         }
 
-        public static Note Parse(String noteString)
+        public static Note Parse (String noteString)
         {
             if (noteString == null || noteString.Length < 1)
             {
@@ -126,7 +126,7 @@ namespace BardMusic.Song
                         else
                         {
                             // Validate modifier
-                            if (noteStringParts[0].IndexOf(Const.Modifier.FLAT) > -1 && noteStringParts[0].IndexOf(Const.Modifier.SHARP) > 1)
+                            if (noteStringParts[0].IndexOf(Const.Modifier.FLAT) > -1 && noteStringParts[0].IndexOf(Const.Modifier.SHARP) > -1)
                             {
                                 throw new ArgumentException("Too many modifiers in note string.");
                             }
@@ -141,6 +141,10 @@ namespace BardMusic.Song
                             {
                                 note.Modifier = Const.Modifier.SHARP;
                                 noteStringParts[0] = noteStringParts[0].Remove(noteStringParts[0].IndexOf(Const.Modifier.SHARP), 1);
+                            }
+                            else if (noteStringParts[0].IndexOf(Const.Modifier.FLAT) == -1 && noteStringParts[0].IndexOf(Const.Modifier.SHARP) == -1)
+                            {
+                                note.Modifier = Const.Modifier.NATURAL;
                             }
                             else
                             {
@@ -223,6 +227,10 @@ namespace BardMusic.Song
                                 {
                                     throw new ArgumentOutOfRangeException("Octave is outside of the allowed range.");
                                 }
+                            }
+                            else if (noteStringParts[0].IndexOf("+") == -1 && noteStringParts[0].IndexOf("-") == -1)
+                            {
+                                note.Octave = Const.Octave.NATURAL;
                             }
                             else
                             {
@@ -330,7 +338,7 @@ namespace BardMusic.Song
             }
         }
 
-        public static string GetKeyBinding(Note note)
+        public static string GetKeyBinding (Note note)
         {
             if (note == null)
             {
