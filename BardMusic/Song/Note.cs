@@ -1,21 +1,47 @@
 ﻿using Const = Constants;
 using System;
 using System.IO;
-using System.Windows.Forms;
+using BardMusic.Extensions;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Song
 {
-    public enum Modifiers { SHARP, NATURAL, FLAT };
-
     public class Note
     {
-        public string Pitch;
-        public string Modifier;
+        public char Pitch
+        {
+            get
+            {
+                char pitch = (char)('A' + NoteIndex);
+
+                return NoteIndex != -1 ? pitch : Const.Pitch.Rest;
+            }
+            set
+            {
+                if (value == Const.Pitch.Rest)
+                {
+                    NoteIndex = -1;
+                    return;
+                }
+
+                if (value >= Const.Pitch.A && value <= Const.Pitch.G)
+                {
+                    NoteIndex = value - Const.Pitch.A;
+                }
+                else
+                {
+                    throw new ArgumentOutOfRangeException($"Specified pitch {value} is out of range. Must be A-G or R.");
+                }
+            }
+        }
+
+        public Const.Modifiers Modifier = Const.Modifiers.NATURAL;
         /// <summary>
-        /// 0 = a,...,7 = g
+        /// 0 = A,...,7 = G.
+        /// -1 = R (Rest)
         /// </summary>
-        public int NoteIndex = 0;
-        //public Modifiers Modifier = Modifiers.NATURAL;
+        protected int NoteIndex = 0;
 
         protected int length = 0;
         public int Length
@@ -26,7 +52,14 @@ namespace Song
             }
             set
             {
-                length = (value) % 17;
+                if (value >= 1 && value <= 5 || value == 8 || value == 16)
+                {
+                    length = value;
+                }
+                else
+                {
+                    throw new ArgumentOutOfRangeException("Note length can only be 1, 2, 3, 4, 5, 8 or 16.");
+                }
             }
         }
 
@@ -41,237 +74,257 @@ namespace Song
             {
                 if (value < -1 || value > 2)
                 {
-                    throw new ArgumentNullException("Out of range [-1, 2]");
+                    throw new ArgumentOutOfRangeException($"Out of range [-1, 2], try to set to {value}");
                 }
                 octave = value;
             }
         }
 
-        public static Note Parse(TextReader _inputStream, char curChar)
+        public static Note Parse(TextReader _inputStream)
         {
-            var curNoteOffsetSet = false;
-            var curNoteModiferSet = false;
-            var curNoteOctaveSet = false;
-            var curNoteLengthSet = false;
-            var negateOctave = false;
             var newNote = new Note();
 
-            while ((curChar = (char)_inputStream.Read()) != -1)
+            if ((char)_inputStream.Read() != '(')
             {
-                if (curChar == ')' || curChar == '\uffff')
-                {
-                    break;
-                }
-
-                var alphaCharOffset = curChar - 'a';
-                if (alphaCharOffset >= 0 && alphaCharOffset <= 'g' && !curNoteOffsetSet)
-                {
-                    newNote.NoteIndex = alphaCharOffset;
-                    curNoteOffsetSet = true;
-                    continue;
-                }
-
-                if (!curNoteModiferSet)
-                {
-                    switch (curChar.ToString())
-                    {
-                        case Const.Modifier.FLAT:
-                            newNote.Modifier = Const.Modifier.FLAT;
-                            curNoteModiferSet = true;
-                            continue;
-                        case Const.Modifier.SHARP:
-                            newNote.Modifier = Const.Modifier.SHARP;
-                            curNoteModiferSet = true;
-                            continue;
-                    }
-                }
-
-                if (!curNoteOctaveSet)
-                {
-                    if (curChar == '-' || curChar == '+')
-                    {
-                        if (curChar == '-')
-                        {
-                            negateOctave = true;
-                        }
-                        curChar = (char)_inputStream.Read();
-                        if (curChar == -1) break;
-                    }
-                    var numberCharOffset = curChar - '0';
-                    if (numberCharOffset >= 0 && numberCharOffset <= 2)
-                    {
-                        newNote.Octave = numberCharOffset * (negateOctave ? -1 : 1);
-                        curNoteOctaveSet = true;
-                        continue;
-                    }
-                    continue;
-                }
-
-                if (!curNoteLengthSet)
-                {
-                    var numberCharOffset = curChar - '0';
-                    var curNumber = 0;
-
-                    while (numberCharOffset >= 0 && numberCharOffset <= 9)
-                    {
-                        curNumber *= 10;
-                        curNumber += numberCharOffset;
-                        if (numberCharOffset >= 0 && numberCharOffset <= 9)
-                        {
-                            curChar = (char)_inputStream.Read();
-                            numberCharOffset = curChar - '0';
-                        }
-                    }
-                    ;
-
-                    if (curNumber > 0 && curNumber <= 16)
-                    {
-                        newNote.Length = curNumber;
-                        curNoteLengthSet = true;
-                        continue;
-                    }
-                    continue;
-                }
+                throw new InvalidOperationException("Stream must start with ( to process a note!");
             }
+            else
+            {
+                _inputStream.ReadToNextNonWhitespaceCharacter();//move to next input to process
+            }
+
+            if (TryParseNoteOffset(newNote, _inputStream))
+            {
+                _inputStream.ReadToNextNonWhitespaceCharacter();
+            }
+            else
+            {
+                throw new FormatException("Notes must start with a valid pitch identifier.");
+            }
+
+            //Only need to keep processing the pitch if it isn't a rest
+            if (newNote.Pitch != Const.Pitch.Rest)
+            {
+                //optional, defaults to natural if not specified
+                TryParseNoteModifier(newNote, _inputStream);
+
+                _inputStream.ReadToNextNonWhitespaceCharacter();
+
+                //optional, defauls to zero if not specified
+                TryParseNoteOctave(newNote, _inputStream);
+
+                _inputStream.ReadToNextNonWhitespaceCharacter();
+            }
+
+            if (!_inputStream.ReadIfEqualTo(','))
+            {
+                var badChar = (char)_inputStream.Peek();
+                throw new FormatException($"Expected a comma after pitch-octave identifier. Instead got '{badChar}'.");
+            }
+
+            _inputStream.ReadToNextNonWhitespaceCharacter();
+
+            if (TryParseNoteLength(newNote, _inputStream))
+            {
+                _inputStream.ReadToNextNonWhitespaceCharacter();
+            }
+            else
+            {
+                throw new FormatException("Expected a valid note length after pitch-octave identifier.");
+            }
+
+            //consume to move the stream off this note
+            _inputStream.ReadIfEqualTo(')');
+            _inputStream.ReadIfEqualTo(';');
 
             return newNote;
         }
 
-        public static string GetKeyBinding(Note note)
+        private static bool TryParseNoteLength(Note newNote, TextReader inputStream)
         {
-            string keyBinding = "";
+            var noteLengthSet = false;
+            var intLength = -1;
 
-            if (note == null)
+            if (noteLengthSet = TryParseIntFromStream(inputStream, out intLength))
             {
-                throw new ArgumentNullException("Note is undefined!");
+                newNote.Length = intLength;
             }
-            else
+
+
+            return noteLengthSet;
+        }
+
+        private static bool TryParseNoteOctave(Note newNote, TextReader _inputStream)
+        {
+            var noteOctaveSet = false;
+            var curChar = (char)_inputStream.Peek();
+            var negate = false;
+
+            if (curChar == '-' || curChar == '+')
             {
-                switch (note.Octave)
+                if (curChar == '-') { negate = true; }
+                _inputStream.Read();//consume the + or -
+                curChar = (char)_inputStream.Peek();
+            }
+
+            if (char.IsDigit(curChar))
+            { 
+                if (noteOctaveSet = TryParseIntFromStream(_inputStream, out int octave))
                 {
-                    case Const.Octave.TOP:
-                        if (note.Pitch != Const.Pitch.C)
-                        {
-                            throw new ArgumentOutOfRangeException("Octave +2 only contains C!");
-                        }
-                        else
-                        {
-                            keyBinding += Const.KeyBinding.ALT;
-                            break;
-                        }
-                    case Const.Octave.HIGH:
-                        keyBinding += Const.KeyBinding.SHIFT;
-                        break;
+                    newNote.Octave = octave * (negate ? -1 : 1);
+                }
+            }
+
+            return noteOctaveSet;
+        }
+
+        private static bool TryParseNoteModifier(Note note, TextReader inputStream)
+        {
+            var setModifier = false;
+            var curChar = (char)inputStream.Peek();
+
+            switch (curChar.ToString())
+            {
+                case Const.Modifier.FLAT:
+                    note.Modifier = Const.Modifiers.FLAT;
+                    setModifier = true;
+                    break;
+                case Const.Modifier.SHARP:
+                    note.Modifier = Const.Modifiers.SHARP;
+                    setModifier = true;
+                    break;
+            }
+
+            if (setModifier) { inputStream.Read(); }
+
+            return setModifier;
+        }
+
+        private static bool TryParseNoteOffset(Note note, TextReader inputStream)
+        {
+            var processedNoteOffset = false;
+            var curChar = (char)inputStream.Peek();
+
+            var alphaCharOffset = char.ToUpper(curChar) - 'A';
+            if (alphaCharOffset >= 0 && alphaCharOffset <= 'G' - 'A')
+            {
+                note.NoteIndex = alphaCharOffset;
+                processedNoteOffset = true;
+            }
+            else if (curChar == Const.Pitch.Rest)
+            {
+                note.Pitch = Const.Pitch.Rest;
+                processedNoteOffset = true;
+            }
+
+            if (processedNoteOffset) { inputStream.Read(); }
+
+            return processedNoteOffset;
+        }
+
+        protected static bool TryParseIntFromStream(TextReader inputStream, out int parsedInt)
+        {
+            var intStr = "";
+            char curChar;
+
+            do
+            {
+                curChar = (char)inputStream.Peek();
+                if (char.IsDigit(curChar))
+                {
+                    intStr += curChar;
+                    inputStream.Read();
+                }
+                else
+                {
+                    break;
+                }
+            }
+            while (true);
+
+            return int.TryParse(intStr, out parsedInt);
+        }
+
+        protected string[] keyOrdering = new string[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "="};
+        protected Dictionary<char, int> pitchOffsetMapping =
+            new Dictionary<char, int>()
+            {
+                {Const.Pitch.C, 0},
+                {Const.Pitch.D, 2},
+                {Const.Pitch.E, 4},
+                {Const.Pitch.F, 5},
+                {Const.Pitch.G, 7},
+                {Const.Pitch.A, 9},
+                {Const.Pitch.B, 11},
+                {Const.Pitch.Rest, -1}
+            };
+        protected char[] pitchesThatDontAllowFlats = new char[] { Const.Pitch.C, Const.Pitch.F };
+        protected char[] pitchesThatDontAllowSharps = new char[] { Const.Pitch.E, Const.Pitch.B };
+
+        public string GetSendKeyString()
+        {
+            var sendKeyStr = "";
+
+            if (pitchOffsetMapping.ContainsKey(Pitch))
+            {
+                var offset = GetPitchKeyOffset(Pitch);
+                var modifierKey = "";
+
+                switch(Octave)
+                {
                     case Const.Octave.NATURAL:
-                        keyBinding += Const.KeyBinding.CTRL;
+                        modifierKey = Const.KeyBinding.CTRL;
                         break;
-                    case Const.Octave.LOW:
+                    case Const.Octave.HIGH:
+                        modifierKey = Const.KeyBinding.SHIFT;
                         break;
-                    default:
-                        throw new ArgumentException("Invalid octave!");
+                    case Const.Octave.TOP:
+                        modifierKey = Const.KeyBinding.ALT;
+                        break;
                 }
-                switch (note.Pitch)
+
+                if (Octave == Const.Octave.TOP && (Pitch != Const.Pitch.C || Modifier != Const.Modifiers.NATURAL))
                 {
-                    case Const.Pitch.C:
-                        switch (note.Modifier)
-                        {
-                            case Const.Modifier.FLAT:
-                                throw new ArgumentException("C@ is invalid!");
-                            case Const.Modifier.SHARP:
-                                keyBinding += Const.KeyBinding.TWO;
-                                break;
-                            default:
-                                keyBinding += Const.KeyBinding.ONE;
-                                break;
-                        }
-                        break;
-                    case Const.Pitch.D:
-                        switch (note.Modifier)
-                        {
-                            case Const.Modifier.FLAT:
-                                keyBinding += Const.KeyBinding.TWO;
-                                break;
-                            case Const.Modifier.SHARP:
-                                keyBinding += Const.KeyBinding.FOUR;
-                                break;
-                            default:
-                                keyBinding += Const.KeyBinding.THREE;
-                                break;
-                        }
-                        break;
-                    case Const.Pitch.E:
-                        switch (note.Modifier)
-                        {
-                            case Const.Modifier.FLAT:
-                                keyBinding += Const.KeyBinding.FOUR;
-                                break;
-                            case Const.Modifier.SHARP:
-                                throw new ArgumentException("E# is invalid!");
-                            default:
-                                keyBinding += Const.KeyBinding.FIVE;
-                                break;
-                        }
-                        break;
-                    case Const.Pitch.F:
-                        switch (note.Modifier)
-                        {
-                            case Const.Modifier.FLAT:
-                                throw new ArgumentException("F@ is invalid!");
-                            case Const.Modifier.SHARP:
-                                keyBinding += Const.KeyBinding.SEVEN;
-                                break;
-                            default:
-                                keyBinding += Const.KeyBinding.SIX;
-                                break;
-                        }
-                        break;
-                    case Const.Pitch.G:
-                        switch (note.Modifier)
-                        {
-                            case Const.Modifier.FLAT:
-                                keyBinding += Const.KeyBinding.SEVEN;
-                                break;
-                            case Const.Modifier.SHARP:
-                                keyBinding += Const.KeyBinding.NINE;
-                                break;
-                            default:
-                                keyBinding += Const.KeyBinding.EIGHT;
-                                break;
-                        }
-                        break;
-                    case Const.Pitch.A:
-                        switch (note.Modifier)
-                        {
-                            case Const.Modifier.FLAT:
-                                keyBinding += Const.KeyBinding.NINE;
-                                break;
-                            case Const.Modifier.SHARP:
-                                keyBinding += Const.KeyBinding.MINUS;
-                                break;
-                            default:
-                                keyBinding += Const.KeyBinding.ZERO;
-                                break;
-                        }
-                        break;
-                    case Const.Pitch.B:
-                        switch (note.Modifier)
-                        {
-                            case Const.Modifier.FLAT:
-                                keyBinding += Const.KeyBinding.MINUS;
-                                break;
-                            case Const.Modifier.SHARP:
-                                throw new ArgumentException("B# is invalid!");
-                            default:
-                                keyBinding += Const.KeyBinding.EQUALS;
-                                break;
-                        }
-                        break;
-                    default:
-                        throw new ArgumentException("Invalid pitch!");
+                    throw new ArgumentException("Only C natural is supported in the top octave.");
+                }
+
+                sendKeyStr = modifierKey + keyOrdering[offset];
+            }
+
+            return sendKeyStr;
+        }
+
+        private int GetPitchKeyOffset(char pitch)
+        {
+            var offset = pitchOffsetMapping[Pitch];
+
+            if (offset >= 0 && offset < keyOrdering.Length)
+            {
+                if (Modifier == Const.Modifiers.FLAT)
+                {
+                    if (pitchesThatDontAllowFlats.Any(p => p == Pitch))
+                    {
+                        throw new ArgumentException($"Flats are not allowed for {Pitch} notes.");
+                    }
+                    else
+                    {
+                        offset--;
+                    }
+                }
+                else if (Modifier == Const.Modifiers.SHARP)
+                {
+                    if (pitchesThatDontAllowSharps.Any(p => p == Pitch))
+                    {
+                        throw new ArgumentException($"Sharps are not allowed for {Pitch} notes.");
+                    }
+                    else
+                    {
+                        offset++;
+                    }
                 }
             }
 
-            return keyBinding;
+            return offset;
         }
     }
 }

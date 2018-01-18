@@ -18,15 +18,16 @@ namespace Song
             var curNote = new Note();
 
             char curChar;
-            while ((curChar = (char)_inputStream.Read()) != -1)
+            while ((curChar = (char)_inputStream.Peek()) != -1)
             {
                 switch (curChar)
                 {
                     case '(':
-                        curNote = Note.Parse(_inputStream, curChar);
+                        curNote = Note.Parse(_inputStream);
                         song.AddNote(curNote);
                         break;
                 }
+                _inputStream.Read();
 
                 return song;
             }
