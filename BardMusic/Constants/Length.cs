@@ -1,4 +1,4 @@
-﻿namespace Constants
+﻿namespace BardMusic.Constants
 {
     public class Length
     {

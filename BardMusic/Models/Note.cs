@@ -1,11 +1,11 @@
-﻿using Const = Constants;
+﻿using Const = BardMusic.Constants;
 using System;
 using System.IO;
 using BardMusic.Extensions;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Song
+namespace BardMusic.Models
 {
     public class Note
     {
@@ -37,13 +37,14 @@ namespace Song
         }
 
         public Const.Modifiers Modifier = Const.Modifiers.NATURAL;
+
         /// <summary>
         /// 0 = A,...,7 = G.
         /// -1 = R (Rest)
         /// </summary>
         protected int NoteIndex = 0;
 
-        protected int length = 0;
+        protected int length = 1;
         public int Length
         {
             get
@@ -63,7 +64,7 @@ namespace Song
             }
         }
 
-        protected int octave = 0;
+        protected int octave = Const.Octave.NATURAL;
         public int Octave
         {
             get
@@ -80,22 +81,22 @@ namespace Song
             }
         }
 
-        public static Note Parse(TextReader _inputStream)
+        public static Note Parse(TextReader inputStream)
         {
             var newNote = new Note();
 
-            if ((char)_inputStream.Read() != '(')
+            if ((char)inputStream.Read() != '(')
             {
                 throw new InvalidOperationException("Stream must start with ( to process a note!");
             }
             else
             {
-                _inputStream.ReadToNextNonWhitespaceCharacter();//move to next input to process
+                inputStream.ReadToNextNonWhitespaceCharacter();//move to next input to process
             }
 
-            if (TryParseNoteOffset(newNote, _inputStream))
+            if (TryParseNoteOffset(newNote, inputStream))
             {
-                _inputStream.ReadToNextNonWhitespaceCharacter();
+                inputStream.ReadToNextNonWhitespaceCharacter();
             }
             else
             {
@@ -106,27 +107,27 @@ namespace Song
             if (newNote.Pitch != Const.Pitch.Rest)
             {
                 //optional, defaults to natural if not specified
-                TryParseNoteModifier(newNote, _inputStream);
+                TryParseNoteModifier(newNote, inputStream);
 
-                _inputStream.ReadToNextNonWhitespaceCharacter();
+                inputStream.ReadToNextNonWhitespaceCharacter();
 
                 //optional, defauls to zero if not specified
-                TryParseNoteOctave(newNote, _inputStream);
+                TryParseNoteOctave(newNote, inputStream);
 
-                _inputStream.ReadToNextNonWhitespaceCharacter();
+                inputStream.ReadToNextNonWhitespaceCharacter();
             }
 
-            if (!_inputStream.ReadIfEqualTo(','))
+            if (!inputStream.ReadIfEqualTo(','))
             {
-                var badChar = (char)_inputStream.Peek();
+                var badChar = (char)inputStream.Peek();
                 throw new FormatException($"Expected a comma after pitch-octave identifier. Instead got '{badChar}'.");
             }
 
-            _inputStream.ReadToNextNonWhitespaceCharacter();
+            inputStream.ReadToNextNonWhitespaceCharacter();
 
-            if (TryParseNoteLength(newNote, _inputStream))
+            if (TryParseNoteLength(newNote, inputStream))
             {
-                _inputStream.ReadToNextNonWhitespaceCharacter();
+                inputStream.ReadToNextNonWhitespaceCharacter();
             }
             else
             {
@@ -134,8 +135,8 @@ namespace Song
             }
 
             //consume to move the stream off this note
-            _inputStream.ReadIfEqualTo(')');
-            _inputStream.ReadIfEqualTo(';');
+            inputStream.ReadIfEqualTo(')');
+            inputStream.ReadIfEqualTo(';');
 
             return newNote;
         }

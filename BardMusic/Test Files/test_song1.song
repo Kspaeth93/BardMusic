@@ -1,0 +1,4 @@
+﻿=====BEGIN=BARD=MUSIC=SONG=FILE=====
+(a,16);(b@,16);(c#,16);(a-1,8);(a+1,8);
+(c#+1,16);(c#,8);(b@,16);(c#,16);
+======END=BARD=MUSIC=SONG=FILE======
