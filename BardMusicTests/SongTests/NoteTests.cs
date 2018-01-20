@@ -1,14 +1,13 @@
-﻿using Const = Constants;
+﻿using Const = BardMusic.Constants;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Song;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Constants;
 using System.Diagnostics;
+using BardMusic.Models;
 
 namespace BardMusicTests
 {
@@ -22,8 +21,8 @@ namespace BardMusicTests
 
             var note = Note.Parse(sr);
 
-            Assert.AreEqual(Pitch.B, note.Pitch);
-            Assert.AreEqual(Modifiers.FLAT, note.Modifier);
+            Assert.AreEqual(Const.Pitch.B, note.Pitch);
+            Assert.AreEqual(Const.Modifiers.FLAT, note.Modifier);
             Assert.AreEqual(-1, note.Octave);
             Assert.AreEqual(16, note.Length);
         }
@@ -35,8 +34,8 @@ namespace BardMusicTests
 
             var note = Note.Parse(sr);
 
-            Assert.AreEqual(Pitch.G, note.Pitch);
-            Assert.AreEqual(Modifiers.SHARP, note.Modifier);
+            Assert.AreEqual(Const.Pitch.G, note.Pitch);
+            Assert.AreEqual(Const.Modifiers.SHARP, note.Modifier);
             Assert.AreEqual(1, note.Octave);
             Assert.AreEqual(8, note.Length);
         }
@@ -48,8 +47,8 @@ namespace BardMusicTests
 
             var note = Note.Parse(sr);
 
-            Assert.AreEqual(Pitch.D, note.Pitch);
-            Assert.AreEqual(Modifiers.SHARP, note.Modifier);
+            Assert.AreEqual(Const.Pitch.D, note.Pitch);
+            Assert.AreEqual(Const.Modifiers.SHARP, note.Modifier);
             Assert.AreEqual(0, note.Octave);
             Assert.AreEqual(4, note.Length);
         }
@@ -61,8 +60,8 @@ namespace BardMusicTests
 
             var note = Note.Parse(sr);
 
-            Assert.AreEqual(Pitch.C, note.Pitch);
-            Assert.AreEqual(Modifiers.NATURAL, note.Modifier);
+            Assert.AreEqual(Const.Pitch.C, note.Pitch);
+            Assert.AreEqual(Const.Modifiers.NATURAL, note.Modifier);
             Assert.AreEqual(1, note.Octave);
             Assert.AreEqual(2, note.Length);
         }
@@ -74,8 +73,8 @@ namespace BardMusicTests
 
             var note = Note.Parse(sr);
 
-            Assert.AreEqual(Pitch.E, note.Pitch);
-            Assert.AreEqual(Modifiers.NATURAL, note.Modifier);
+            Assert.AreEqual(Const.Pitch.E, note.Pitch);
+            Assert.AreEqual(Const.Modifiers.NATURAL, note.Modifier);
             Assert.AreEqual(0, note.Octave);
             Assert.AreEqual(1, note.Length);
         }
@@ -87,8 +86,8 @@ namespace BardMusicTests
 
             var note = Note.Parse(sr);
 
-            Assert.AreEqual(Pitch.A, note.Pitch);
-            Assert.AreEqual(Modifiers.NATURAL, note.Modifier);
+            Assert.AreEqual(Const.Pitch.A, note.Pitch);
+            Assert.AreEqual(Const.Modifiers.NATURAL, note.Modifier);
             Assert.AreEqual(0, note.Octave);
             Assert.AreEqual(2, note.Length);
         }
@@ -100,7 +99,7 @@ namespace BardMusicTests
 
             var note = Note.Parse(sr);
 
-            Assert.AreEqual(Pitch.Rest, note.Pitch);
+            Assert.AreEqual(Const.Pitch.Rest, note.Pitch);
             Assert.AreEqual(16, note.Length);
         }
 
@@ -197,8 +196,8 @@ namespace BardMusicTests
             {
                 var note = Note.Parse(tr);
 
-                Assert.AreEqual(Pitch.A, note.Pitch);
-                Assert.AreEqual(Modifiers.SHARP, note.Modifier);
+                Assert.AreEqual(Const.Pitch.A, note.Pitch);
+                Assert.AreEqual(Const.Modifiers.SHARP, note.Modifier);
                 Assert.AreEqual(1, note.Octave);
                 Assert.AreEqual(8, note.Length);
             }

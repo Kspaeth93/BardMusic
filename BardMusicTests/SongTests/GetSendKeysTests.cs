@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Song;
+using BardMusic.Models;
+using Const = BardMusic.Constants;
 
 namespace BardMusicTests.SongTests
 {
@@ -14,11 +15,11 @@ namespace BardMusicTests.SongTests
             var note = 
                 new Note()
                 {
-                    Pitch = Constants.Pitch.C,
+                    Pitch = Const.Pitch.C,
                     Octave = 0
                 };
 
-            Assert.AreEqual(Constants.KeyBinding.CTRL + Constants.KeyBinding.ONE, note.GetSendKeyString());
+            Assert.AreEqual(Const.KeyBinding.CTRL + Const.KeyBinding.ONE, note.GetSendKeyString());
         }
 
         [TestMethod]
@@ -27,11 +28,11 @@ namespace BardMusicTests.SongTests
             var note =
                 new Note()
                 {
-                    Pitch = Constants.Pitch.C,
-                    Octave = Constants.Octave.TOP
+                    Pitch = Const.Pitch.C,
+                    Octave = Const.Octave.TOP
                 };
 
-            Assert.AreEqual(Constants.KeyBinding.ALT + Constants.KeyBinding.ONE, note.GetSendKeyString());
+            Assert.AreEqual(Const.KeyBinding.ALT + Const.KeyBinding.ONE, note.GetSendKeyString());
         }
 
         [TestMethod]
@@ -40,11 +41,11 @@ namespace BardMusicTests.SongTests
             var note =
                 new Note()
                 {
-                    Pitch = Constants.Pitch.F,
-                    Octave = Constants.Octave.HIGH
+                    Pitch = Const.Pitch.F,
+                    Octave = Const.Octave.HIGH
                 };
 
-            Assert.AreEqual(Constants.KeyBinding.SHIFT + Constants.KeyBinding.SIX, note.GetSendKeyString());
+            Assert.AreEqual(Const.KeyBinding.SHIFT + Const.KeyBinding.SIX, note.GetSendKeyString());
         }
 
         [TestMethod]
@@ -53,11 +54,11 @@ namespace BardMusicTests.SongTests
             var note =
                 new Note()
                 {
-                    Pitch = Constants.Pitch.E,
-                    Octave = Constants.Octave.NATURAL
+                    Pitch = Const.Pitch.E,
+                    Octave = Const.Octave.NATURAL
                 };
 
-            Assert.AreEqual(Constants.KeyBinding.CTRL + Constants.KeyBinding.FIVE, note.GetSendKeyString());
+            Assert.AreEqual(Const.KeyBinding.CTRL + Const.KeyBinding.FIVE, note.GetSendKeyString());
         }
 
         [TestMethod]
@@ -66,11 +67,11 @@ namespace BardMusicTests.SongTests
             var note =
                 new Note()
                 {
-                    Pitch = Constants.Pitch.C,
-                    Octave = Constants.Octave.LOW
+                    Pitch = Const.Pitch.C,
+                    Octave = Const.Octave.LOW
                 };
 
-            Assert.AreEqual(Constants.KeyBinding.ONE, note.GetSendKeyString());
+            Assert.AreEqual(Const.KeyBinding.ONE, note.GetSendKeyString());
         }
 
         [TestMethod]
@@ -80,8 +81,8 @@ namespace BardMusicTests.SongTests
             var note =
                 new Note()
                 {
-                    Pitch = Constants.Pitch.C,
-                    Modifier = Constants.Modifiers.FLAT,
+                    Pitch = Const.Pitch.C,
+                    Modifier = Const.Modifiers.FLAT,
                     Octave = 0
                 };
 
@@ -105,8 +106,8 @@ namespace BardMusicTests.SongTests
             var note =
                 new Note()
                 {
-                    Pitch = Constants.Pitch.F,
-                    Modifier = Constants.Modifiers.FLAT,
+                    Pitch = Const.Pitch.F,
+                    Modifier = Const.Modifiers.FLAT,
                     Octave = 1
                 };
 
@@ -130,9 +131,9 @@ namespace BardMusicTests.SongTests
             var note =
                 new Note()
                 {
-                    Pitch = Constants.Pitch.C,
-                    Modifier = Constants.Modifiers.SHARP,
-                    Octave = Constants.Octave.TOP
+                    Pitch = Const.Pitch.C,
+                    Modifier = Const.Modifiers.SHARP,
+                    Octave = Const.Octave.TOP
                 };
 
             try
@@ -155,9 +156,9 @@ namespace BardMusicTests.SongTests
             var note =
                 new Note()
                 {
-                    Pitch = Constants.Pitch.B,
-                    Modifier = Constants.Modifiers.SHARP,
-                    Octave = Constants.Octave.LOW
+                    Pitch = Const.Pitch.B,
+                    Modifier = Const.Modifiers.SHARP,
+                    Octave = Const.Octave.LOW
                 };
 
             try
