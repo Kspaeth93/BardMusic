@@ -246,7 +246,14 @@ namespace BardMusic.Models
             return int.TryParse(intStr, out parsedInt);
         }
 
-        protected string[] keyOrdering = new string[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "="};
+        protected string[] keyOrdering = new string[] {
+            Const.KeyBinding.ONE, Const.KeyBinding.TWO,
+            Const.KeyBinding.THREE, Const.KeyBinding.FOUR,
+            Const.KeyBinding.FIVE, Const.KeyBinding.SIX,
+            Const.KeyBinding.SEVEN, Const.KeyBinding.EIGHT,
+            Const.KeyBinding.NINE, Const.KeyBinding.ZERO,
+            Const.KeyBinding.MINUS, Const.KeyBinding.EQUALS
+        };
         protected Dictionary<char, int> pitchOffsetMapping =
             new Dictionary<char, int>()
             {
