@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
+using WindowsInput;
+using WindowsInput.Native;
 
 namespace BardMusic.Models
 {
@@ -56,6 +58,18 @@ namespace BardMusic.Models
                 {
                     var sendKeyStr = note.GetSendKeyString();
 
+                    var inputSim = new InputSimulator();
+
+                    if (sendKeyStr.Contains(Constants.KeyBinding.SHIFT))
+                    {
+                        inputSim.Keyboard.KeyDown(VirtualKeyCode.SHIFT);
+                    }
+                    if (sendKeyStr.Contains(Constants.KeyBinding.CTRL))
+                    {
+                        inputSim.Keyboard.KeyDown(VirtualKeyCode.CONTROL);
+                    }
+
+                    //inputSim.Keyboard.KeyPress(VirtualKeyCode)
                     SendKeys.SendWait(sendKeyStr);
                     Thread.Sleep(
                         (interval * 16) / note.Length

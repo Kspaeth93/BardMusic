@@ -22,7 +22,7 @@ namespace BardMusic
         {
             Program program = new Program();
 
-            Song song = program.ReadSongFile(@"..\..\Test Files\test_song1.song");
+            Song song = program.ReadSongFile(@"..\..\Test Files\test_song1.txt");
 
             Process process = program.GetFinalFantasyProcess();
  
@@ -37,15 +37,15 @@ namespace BardMusic
             
             foreach(var note in song.NotesList)
             {
-                Console.WriteLine("Note: (" + note.Pitch + note.Modifier + note.Octave + "," + note.Length + ")");
-                Console.WriteLine("Key Binding: " + note.GetSendKeyString());
+                Trace.Write("Note: (" + note.Pitch + note.Modifier + note.Octave + "," + note.Length + ")");
+                Trace.Write("Key Binding: " + note.GetSendKeyString() + " || ");
             }
             
         }
 
         protected Process GetFinalFantasyProcess ()
         {
-            return Process.GetProcessesByName("ffxiv_dx11").FirstOrDefault();
+            return Process.GetProcessesByName("notepad").FirstOrDefault();
         }
 
         protected void SetProcessToForeground (Process process)
